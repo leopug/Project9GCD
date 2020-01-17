@@ -304,7 +304,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.examples.Project8Codable;
+				PRODUCT_BUNDLE_IDENTIFIER = com.examples.Project9GCD;
 				PRODUCT_NAME = Project9GCD;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -323,7 +323,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.examples.Project8Codable;
+				PRODUCT_BUNDLE_IDENTIFIER = com.examples.Project9GCD;
 				PRODUCT_NAME = Project9GCD;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

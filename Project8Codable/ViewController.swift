@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  Project8Codable
+//  Project9GCD
 //
 //  Created by Ana Caroline de Souza on 03/01/20.
 //  Copyright © 2020 Ana e Leo Corp. All rights reserved.
@@ -15,22 +15,25 @@ class ViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-            
         if navigationController?.tabBarItem.tag == 0 {
             urlString = "https://www.hackingwithswift.com/samples/petitions-1.json"
         } else {
             urlString = "https://www.hackingwithswift.com/samples/petitions-2.json"
         }
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .bookmarks, target: self, action: #selector(showCredit))
-        
-        if let url = URL(string: urlString){
-            if let data = try? Data(contentsOf: url){
-                parse(json: data)
-                return
-            }
+        performSelector(inBackground: #selector(fetchJson), with: nil)
+    }
+    
+    @objc func fetchJson(urlString: String) {
+            if let url = URL(string: urlString){
+                if let data = try? Data(contentsOf: url){
+                    parse(json: data)
+                    return
+                }
+            
+            performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
         }
-        showError()
+        
     }
     
     @objc func showCredit(){
@@ -50,10 +53,12 @@ class ViewController: UITableViewController {
         present(ac, animated: true)
     }
     
-    func showError(){
-        let ac = UIAlertController(title: "problem loading", message: "there was a problem", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Ok", style: .default))
-        present(ac,animated: true)
+
+    
+    @objc func showError(){
+            let ac = UIAlertController(title: "problem loading", message: "there was a problem", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Ok", style: .default))
+            present(ac,animated: true)
     }
     
     func parse(json: Data){
@@ -62,21 +67,12 @@ class ViewController: UITableViewController {
         if let jsonPetitions = try? decoder.decode(Petitions.self, from: json) {
             
             petitions = jsonPetitions.results
-            tableView.reloadData()
+            performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
+        
+        } else {
+            performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
         }
         
-    }
-    
-    func showAlertToGetText() {
-        let ac = UIAlertController(title: "Enter the new list item:", message: nil, preferredStyle: .alert)
-        ac.addTextField()
-        
-        let submitAction = UIAlertAction(title: "Submit", style: .default) {
-            [weak self, weak ac] _ in
-            guard let searchResult = ac?.textFields?[0].text else { return }
-        }
-        ac.addAction(submitAction)
-        present(ac, animated: true)
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
